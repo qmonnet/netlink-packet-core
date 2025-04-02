@@ -97,10 +97,12 @@ impl Emitable for DoneMessage {
     }
 }
 
-impl<'buffer, T: AsRef<[u8]> + 'buffer> Parseable<DoneBuffer<&'buffer T>>
+impl<T: AsRef<[u8]>> Parseable<DoneBuffer<&T>>
     for DoneMessage
 {
-    fn parse(buf: &DoneBuffer<&'buffer T>) -> Result<DoneMessage, DecodeError> {
+    type Error = DecodeError;
+
+    fn parse(buf: &DoneBuffer<&T>) -> Result<DoneMessage, Self::Error> {
         Ok(DoneMessage {
             code: buf.code(),
             extended_ack: buf.extended_ack().to_vec(),
